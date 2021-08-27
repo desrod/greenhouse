@@ -52,7 +52,7 @@ REGIONS = {
 	    "Home based - Americas, Nashville, Tennessee",
         "Home based - Americas, New York",
 	    "Home based - Americas, Oklahoma City",
-	    "Home based - Americas, Omaha"
+	    "Home based - Americas, Omaha",
         "Home based - Americas, Philadelphia",
         "Home based - Americas, Phoenix",
         "Home based - Americas, Portland",
