@@ -110,6 +110,23 @@ REGIONS = {
         "Home based - Europe, Helsingborg",
         "Home based - Europe, Jönköping",
     ],
+    "nycmetro": [
+        "Home based - Americas, Harrison, New Jersey",
+        "Home based - Americas, Kearny, New Jersey",
+        "Home based - Americas, East Orange, New Jersey",
+        "Home based - Americas, Irvington, New Jersey",
+        "Home based - Americas, Orange, New Jersey",
+        "Home based - Americas, Hillside, New Jersey",
+        "Home based - Americas, Belleville, New Jersey",
+        "Home based - Americas, North Arlington, New Jersey",
+        "Home based - Americas, South Orange, New Jersey",
+        "Home based - Americas, Bloomfield, New Jersey",
+        "Home based - Americas, Maplewood, New Jersey",
+        "Home based - Americas, Elizabeth, New Jersey",
+        "Home based - Americas, Union, New Jersey",
+        "Home based - Americas, Bayonne, New Jersey",
+        "Home based - Americas, West Orange, New Jersey",
+    ],
     "austin": [
         "Home based - Americas, Austin, Texas",
         "Home based - Americas, Bastrop, Texas",
@@ -122,13 +139,13 @@ REGIONS = {
         "Home based - Americas, Lockhart, Texas"
     ],
     "brasil": [
-        "Home based - Americas, Santiago",
-        "Home based - Americas, Rio de Janeiro",
-        "Home based - Americas, Belo Horizonte",
-        "Home based - Americas, Porto Alegre",
-        "Home based - Americas, Salvador",
-        "Home based - Americas, Resife",
-        "Home based - Americas, Fortaleza",
+        "Home based - Americas, Santiago, Brazil",
+        "Home based - Americas, Rio de Janeiro, Brazil",
+        "Home based - Americas, Belo Horizonte, Brazil",
+        "Home based - Americas, Porto Alegre, Brazil",
+        "Home based - Americas, Salvador, Brazil",
+        "Home based - Americas, Recife, Pernambuco, Brazil",
+        "Home based - Americas, Fortaleza, Brazil",
     ],
     "emea": [
         "Home based - Africa, Cairo",
@@ -309,7 +326,7 @@ def parse_args():
         "--region",
         dest="regions",
         nargs="+",
-        choices=["americas", "eu", "brasil", "austin", "emea", "apac", "japan"],
+        choices=["americas", "eu", "brasil", "nycmetro", "austin", "emea", "apac", "japan"],
         help="The regions in which to create job postings",
     )
     parser.add_argument(
@@ -472,10 +489,10 @@ def main():
                     location.send_keys(location_text)
 
                     ## Publish the posts out to our external partner sites
-                    try:
-                        browser.find_elements_by_xpath('//label[text()="Glassdoor"]/input[1]')[0].click()
-                    except:
-                        print("INFO: Glassdoor board not available at the moment")
+                    # try:
+                    #     browser.find_elements_by_xpath('//label[text()="Glassdoor"]/input[1]')[0].click()
+                    # except:
+                    #     print("INFO: Glassdoor board not available at the moment")
 
                     try:
                         browser.find_elements_by_xpath('//label[text()="Indeed"]/input[1]')[0].click()
