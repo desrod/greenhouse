@@ -204,6 +204,33 @@ REGIONS = {
         "Home based - Asia Pacific, Tokyo",
         "Home based - Asia Pacific, Yokohama",
     ],
+    "emea-west": [
+        "Home based - Western Sahara, Laayune"
+        "Home based - Mali, Bamako"
+        "Home based - Burkina Faso, Ougadougou"
+        "Home based - Togo, Lome"
+        "Home based - Ivory Coast, Abidjan"
+        "Home based - Liberia, Monrovia"
+        "Home based - Sierra Leone, Freetown"
+        "Home based - Guinea-bissau, Bissau"
+        "Home based - The Gambia, Serekunda"
+        "Home based - Senegal, Dakar"
+        "Home based - Greenland, Nuuk"
+        "Home based - Ireland, Dublin"
+        "Home based - Ireland, Belfast"
+        "Home based - Ireland, Cork"
+        "Home based - Iceland, Reykjavik"
+        "Home based - Portugal, Lisbon"
+        "Home based - Portugal, Porto"
+        "Home based - United Kingdom, London"
+        "Home based - United Kingdom, Birmingham"
+        "Home based - United Kingdom, Leeds"
+        "Home based - United Kingdom, Glasgow"
+        "Home based - Morocco, Casablanca"
+        "Home based - Morocco, Fes"
+        "Home based - Morocco, Tangier"
+        "Home based - Morocco, Marrakesh"
+    ],
 }
 
 ###############################################################
