@@ -222,31 +222,29 @@ REGIONS = {
         "Home based - Asia Pacific, Yokohama",
     ],
     "emea-west": [
-        "Home based - Western Sahara, Laayune"
-        "Home based - Mali, Bamako"
-        "Home based - Burkina Faso, Ougadougou"
-        "Home based - Togo, Lome"
-        "Home based - Ivory Coast, Abidjan"
-        "Home based - Liberia, Monrovia"
-        "Home based - Sierra Leone, Freetown"
-        "Home based - Guinea-bissau, Bissau"
-        "Home based - The Gambia, Serekunda"
-        "Home based - Senegal, Dakar"
-        "Home based - Greenland, Nuuk"
-        "Home based - Ireland, Dublin"
-        "Home based - Ireland, Belfast"
-        "Home based - Ireland, Cork"
-        "Home based - Iceland, Reykjavik"
-        "Home based - Portugal, Lisbon"
-        "Home based - Portugal, Porto"
-        "Home based - United Kingdom, London"
-        "Home based - United Kingdom, Birmingham"
-        "Home based - United Kingdom, Leeds"
-        "Home based - United Kingdom, Glasgow"
-        "Home based - Morocco, Casablanca"
-        "Home based - Morocco, Fes"
-        "Home based - Morocco, Tangier"
-        "Home based - Morocco, Marrakesh"
+        "Home based - Africa, Bamako",
+        "Home based - Africa, Lome",
+        "Home based - Africa, Abidjan",
+        "Home based - Africa, Monrovia",
+        "Home based - Africa, Freetown",
+        "Home based - Africa, Bissau",
+        "Home based - Africa, Serekunda",
+        "Home based - Africa, Dakar",
+        "Home based - North America, Nuuk",
+        "Home based - Europe, Dublin",
+        "Home based - Europe, Belfast",
+        "Home based - Europe, Cork",
+        "Home based - Europe, Reykjavik",
+        "Home based - Europe, Lisbon",
+        "Home based - Europe, Porto",
+        "Home based - Europe, London",
+        "Home based - Europe, Birmingham",
+        "Home based - Europe, Leeds",
+        "Home based - Europe, Glasgow",
+        "Home based - Africa, Casablanca",
+        "Home based - Africa, Fes",
+        "Home based - Africa, Tangier",
+        "Home based - Africa, Marrakesh",
     ],
 }
 
@@ -353,7 +351,7 @@ def parse_args():
         "--region",
         dest="regions",
         nargs="+",
-        choices=["americas", "eu", "brasil", "nycmetro", "austin", "emea", "apac", "japan"],
+        choices=["americas", "eu", "brasil", "nycmetro", "austin", "emea","emea-west", "apac", "japan"],
         help="The regions in which to create job postings",
     )
     parser.add_argument(
