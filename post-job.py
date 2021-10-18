@@ -224,7 +224,6 @@ REGIONS = {
     "emea-west": [
         "Home based - Africa, Bamako",
         "Home based - Africa, Lome",
-        "Home based - Africa, Abidjan",
         "Home based - Africa, Monrovia",
         "Home based - Africa, Freetown",
         "Home based - Africa, Bissau",
