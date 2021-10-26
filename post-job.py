@@ -34,7 +34,6 @@ REGIONS = {
         "Home based - Americas, Chicago",
         "Home based - Americas, Cincinnati",
         "Home based - Americas, Cleveland",
-        "Home based - Americas, Colorado",
         "Home based - Americas, Columbus",
         "Home based - Americas, Dallas",
         "Home based - Americas, Dayton",
