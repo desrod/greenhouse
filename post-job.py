@@ -58,15 +58,15 @@ REGIONS = {
         "Home based - Americas, Portland",
         "Home based - Americas, Raleigh",
         "Home based - Americas, Rochester",
-        "Home based - Americas, Sacramento",
+        "Home based - Americas, Sacramento, California",
         "Home based - Americas, Salt Lake City",
-        "Home based - Americas, San Antonio",
-        "Home based - Americas, San Bernadino, California",
+        "Home based - Americas, San Antonio, Texas",
+        "Home based - Americas, San Bernardino, California, United States",
         "Home based - Americas, San Diego, California",
         "Home based - Americas, San Francisco, California",
         "Home based - Americas, San Jose, California",
-        "Home based - Americas, Seattle",
-        "Home based - Americas, Spokane",
+        "Home based - Americas, Seattle, Washington",
+        "Home based - Americas, Spokane, Washington",
         "Home based - Americas, Syracuse",
         "Home based - Americas, Tacoma",
         "Home based - Americas, Tucson",
@@ -491,10 +491,10 @@ def main():
 
                 for location_text in sorted(new_locations):
                     print(f"--> Processing {location_text}")
-                    publish_location_text = location_text.split(",")[-1].strip()
+                    publish_location_text = location_text.split(",", 1)[-1].strip()
 
                     browser.get(f"{job_posts_page_url}s/new?from=duplicate&amp;greenhouse_job_application_id={canonical_job_id}")
-                    time.sleep(2.5)
+                    time.sleep(1.5)
 
                     browser.refresh()
                     job_name_txt = browser.find_elements_by_xpath('//input[contains(@class, "Input__InputElem-ipbxf8-0")]')[0]
@@ -531,7 +531,6 @@ def main():
                         f'/li[contains(@class, "ui-menu-item")]'
                         f'/div[contains(text(), "{publish_location_text}")]'
                     )
-
                     location_choices = wait.until(
                         lambda browser: browser.find_elements_by_xpath(popup_menu_xpath)
                     )
@@ -555,7 +554,7 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             wait.until(lambda browser: browser.find_elements_by_class_name("job-application__offices"))
-            
+
             ## Click the "Enable" button on each new post created, to make it live
             publish_btns = browser.find_elements_by_xpath('//tr[@class="job-application draft external"]//img[@class="publish-application-button"]')
             for btn in publish_btns:
