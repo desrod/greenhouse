@@ -540,6 +540,7 @@ def main():
                     )
                     publish_location.send_keys(Keys.DOWN)
                     publish_location.send_keys(Keys.TAB)
+                    browser.find_elements_by_xpath('//label[text()="Remote"]/input[1]')[0].click()
                     time.sleep(0.5)
 
                     # click the Save button
