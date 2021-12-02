@@ -133,11 +133,11 @@ REGIONS = {
         "Home based - Americas, Austin, Texas",
         "Home based - Americas, Bastrop, Texas",
         "Home based - Americas, Buda, Texas",
-        "Home based - Americas, Fredricksberg, Texas",
+        "Home based - Americas, Fredericksburg, Texas",
         "Home based - Americas, San Marcos, Texas",
         "Home based - Americas, Dripping Springs, Texas",
         "Home based - Americas, Kyle, Texas",
-        "Home based - Americas, Wimberly, Texas",
+        "Home based - Americas, Wimberley, Texas",
         "Home based - Americas, Lockhart, Texas"
     ],
     "brasil": [
