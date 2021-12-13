@@ -17,7 +17,7 @@ from selenium.webdriver.common.keys import Keys
 
 gh_url = "https://canonical.greenhouse.io"
 JOB_BOARD = "Canonical - Jobs"
-# JOB_BOARD = "INTERNAL"
+JOB_BOARDS_PROTECTED = ["Canonical", "INTERNAL"]
 
 REGIONS = {
     "americas": [
@@ -320,21 +320,37 @@ def sso_authenticate(browser, args):
 ###############################################################
 def delete_posts(browser, wait, job_id):
     browser.get(f"{gh_url}/plans/{job_id}/jobapp")
-    job_posts = len(wait.until(lambda browser: browser.find_elements_by_xpath('//*[@id="job_applications"]/tbody/tr')))
-
-    for i in range(job_posts, 0, -1):
+    
+    job_post_offset = 0
+    while True:
         browser.refresh()
+        
+        job_posts = len(wait.until(lambda browser: browser.find_elements(By.XPATH, '//*[@id="job_applications"]/tbody/tr')))
+        if job_posts == job_post_offset:
+            break
+        
+        job_post = browser.find_element(By.XPATH, '//*[@id="job_applications"]/tbody/tr[' + str(job_post_offset + 1) + ']')
+        if job_post is None:
+            break
 
-        if i > 1:
-            browser.find_element(By.CSS_SELECTOR,".job-application:nth-child(2) .unpublish-application-button",).click()
+        job_post_board = job_post.find_element(By.CSS_SELECTOR, '.board-column').text
+        if job_post_board in JOB_BOARDS_PROTECTED:
+            job_post_offset += 1
+            continue
+
+        if 'live' in job_post.get_attribute('class').split():
+            job_post_unpublish = job_post.find_element(By.CSS_SELECTOR, '.unpublish-application-button')
+            job_post_unpublish.click()
             browser.find_element(By.LINK_TEXT, "Unpublish").click()
 
-            # Click options menu (Delete/Duplicate)
-            browser.find_elements_by_xpath('//*[@id="job_applications"]/tbody/tr[2]/td[3]/div/div[1]')[0].click()
-            print(f"Deleting post {i} from job {job_id} ...")
-            browser.find_elements_by_xpath('//*[@id="job_applications"]/tbody/tr[2]/td[3]/div/div[2]/span/a')[0].click()
-            browser.find_elements_by_xpath('//*[@id="confirm-delete-post"]')[0].click()
-            time.sleep(0.2)
+        job_post_name = job_post.find_element(By.CSS_SELECTOR, '.job-application__name').text.replace('\n', ' ')
+        print(f"Deleting post '{job_post_name}' from job {job_id} ...")
+        
+        # Click options menu (Delete/Duplicate)
+        job_post.find_element(By.XPATH, 'td[3]/div/div[1]').click()
+        job_post.find_element(By.XPATH, 'td[3]/div/div[2]/span/a').click()
+        browser.find_element(By.XPATH, '//*[@id="confirm-delete-post"]').click()
+        time.sleep(0.2)
 
 
 ###############################################################
@@ -427,9 +443,7 @@ def main():
         wait = ui.WebDriverWait(browser, 60) # timeout after 60 seconds
 
         if args.reset:
-            print("[Disabled] The reset function must be updated to support multiple Canonical jobs.")
-            #delete_posts(browser, wait, job_id)
-            exit()
+            delete_posts(browser, wait, job_id)
 
         multipage = False
         page = 1
@@ -475,7 +489,7 @@ def main():
         if args.limit:
             canonical_list = [args.limit]
         else:
-            canonical_list = [existing_ids[i] for i,x in enumerate(existing_types) if "Canonical" == x or "INTERNAL" == x]
+            canonical_list = [existing_ids[i] for i,x in enumerate(existing_types) if x in JOB_BOARDS_PROTECTED]
 
         for canonical_job_id in canonical_list:
             canonical_job_name = [existing_names[i] for i,x in enumerate(existing_ids) if canonical_job_id == x][0]
