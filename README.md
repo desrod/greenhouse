@@ -120,7 +120,7 @@ To clone a specific post, you'll need to identify two key numeric values:
 3. Knowing these two values, you can then clone with the `--limit` flag using this syntax: 
 
    ``` 
-   ./post-job.py 123456 --region brasil --limit 543210 --headless
+   ./post-job.py 123456 --region emea --limit 543210 --headless
    ```
 
 I have a Tampermonkey browser add-on that exposes this on each job post to make it easier to clone these roles. Please contact me directly if you want the link to that add-on and wish to use it (link intentionally not posted in this README). 
@@ -154,7 +154,7 @@ This was only tested on Chrome, but may also work with Firefox. YMMV, but report
 
 ## Available Regions
 ---
-The available regions are `americas`, `nycmetro`, `emea`, `eu`, `brasil`, and `apac`. You can view/update the lists of cities in those regions directly in the source file.
+The available regions are `americas`, `emea` and `apac`. You can view/update the lists of cities in those regions directly in the source file.
 
 ## Additional Troubleshooting
 ---
