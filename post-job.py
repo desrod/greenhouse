@@ -286,14 +286,8 @@ def parse_args():
         nargs="+",
         choices=[
             "americas",
-            "eu",
-            "brasil",
-            "nycmetro",
-            "austin",
             "emea",
-            "emea-west",
             "apac",
-            "japan",
         ],
         help="The regions in which to create job postings",
     )
