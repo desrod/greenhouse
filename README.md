@@ -150,15 +150,15 @@ At the moment, this is a two-step process, while we work out how to limit (using
 ---
 Default browser is Chrome but you can alternatively pass the `--browser firefox` option.
 
-This was only tested on Chrome, but may also work with Firefox. YMMV, but report issues you find and we'll fix it! 
+This was only tested on Chrome, but may also work with Firefox. YMMV, but report issues you find and we'll fix it!
 
 ## Available Regions
 ---
-The available regions are `americas`, `emea` and `apac`. You can view/update the lists of cities in those regions directly in the source file.
+The available regions are `americas`, `emea` and `apac`. Please ***DO NOT*** update the list of cities in those regions directly in the source file without explicit discussion and approval.
 
 ## Additional Troubleshooting
 ---
-If you see an error that looks like: 
+If you see an error that looks like:
 ```
 Traceback (most recent call last):
   File "env/lib/python3.8/site-packages/selenium/webdriver/common/service.py", line 72, in start
