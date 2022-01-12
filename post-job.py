@@ -170,7 +170,7 @@ def sso_authenticate(browser, args):
 
     browser.get(gh_url)
     # click Accept Cookies button
-    
+
     accept_cookies_btn = browser.find_elements(By.XPATH, '//*[@id="cookie-policy-button-accept"]')
     if accept_cookies_btn:
         accept_cookies_btn[0].click()
@@ -321,12 +321,11 @@ def remove_tooltips(browser):
     browser.execute_script(
         dedent(
             """
-        const tooltipElements = document.getElementsByClassName("introjs-tooltiptext")
-        if (tooltipElements.length) {
-            const closeButton = tooltip_elements[0].getElementsByClassName("close")[0]
-            closeButton.click()
-        }
-    """
+            const tooltipElements = document.getElementsByClassName("introjs-tooltiptext")
+            if (tooltipElements.length) {
+                const closeButton = tooltip_elements[0].getElementsByClassName("close")[0]
+                closeButton.click()
+            }"""
         )
     )
 
@@ -455,8 +454,8 @@ def main():
                     time.sleep(1.5)
 
                     browser.refresh()
-                    job_name_txt = browser.find_elements(By.XPATH, 
-                        '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
+                    job_name_txt = browser.find_elements(
+                        By.XPATH, '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
                     )[0]
 
                     job_name = job_name_txt.get_attribute("value").replace("Copy of ", "").strip()
@@ -464,14 +463,14 @@ def main():
                     job_name_txt.clear()
                     job_name_txt.send_keys(job_name)
 
-                    post_to = browser.find_elements(By.XPATH, 
-                        '//label[text()="Post To"]/..//input[1]'
+                    post_to = browser.find_elements(
+                        By.XPATH, '//label[text()="Post To"]/..//input[1]'
                     )[0]
                     post_to.send_keys(JOB_BOARD)
                     post_to.send_keys(Keys.ENTER)
 
-                    location = browser.find_elements(By.XPATH, 
-                        '//label[text()="Location"]/..//input[1]'
+                    location = browser.find_elements(
+                        By.XPATH, '//label[text()="Location"]/..//input[1]'
                     )[0]
                     location.clear()
                     location.send_keys(location_text)
@@ -483,12 +482,14 @@ def main():
                     #     print("INFO: Glassdoor board not available at the moment")
 
                     try:
-                        browser.find_elements(By.XPATH, '//label[text()="Indeed"]/input[1]')[0].click()
+                        browser.find_elements(By.XPATH, '//label[text()="Indeed"]/input[1]')[
+                            0
+                        ].click()
                     except:
                         print("INFO: Indeed board not available at the moment")
 
-                    publish_location = browser.find_elements(By.XPATH, 
-                        '//input[@placeholder="Select location"]'
+                    publish_location = browser.find_elements(
+                        By.XPATH, '//input[@placeholder="Select location"]'
                     )[0]
                     publish_location.clear()
                     publish_location.send_keys(publish_location_text)
@@ -511,8 +512,8 @@ def main():
                     save_btn.click()
 
                     wait.until(
-                        lambda browser: browser.find_elements(By.CLASS_NAME, 
-                            "job-application__offices"
+                        lambda browser: browser.find_elements(
+                            By.CLASS_NAME, "job-application__offices"
                         )
                     )
 
@@ -530,8 +531,9 @@ def main():
             )
 
             ## Click the "Enable" button on each new post created, to make it live
-            publish_btns = browser.find_elements(By.XPATH, 
-                '//tr[@class="job-application draft external"]//img[@class="publish-application-button"]'
+            publish_btns = browser.find_elements(
+                By.XPATH,
+                '//tr[@class="job-application draft external"]//img[@class="publish-application-button"]',
             )
             for btn in publish_btns:
                 btn.click()
