@@ -5,12 +5,12 @@ import json
 import os
 import time
 from re import search
+from textwrap import dedent
 
 import selenium
 import selenium.webdriver.support.ui as ui
 from appdirs import user_data_dir
 from selenium import webdriver
-
 # from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -219,11 +219,9 @@ def sso_authenticate(browser, args):
             0
         ].click()
 
-
 ###############################################################
 def delete_posts(browser, wait, job_id):
     browser.get(f"{gh_url}/plans/{job_id}/jobapp")
-
     job_post_offset = 0
     while True:
         browser.refresh()
@@ -235,6 +233,7 @@ def delete_posts(browser, wait, job_id):
                 )
             )
         )
+
         if job_posts == job_post_offset:
             break
 
@@ -320,6 +319,17 @@ def parse_args():
 
 
 ###############################################################
+
+def remove_tooltips(browser):
+    browser.execute_script(dedent('''
+        const tooltipElements = document.getElementsByClassName("introjs-tooltiptext")
+        if (tooltipElements.length) {
+            const closeButton = tooltip_elements[0].getElementsByClassName("close")[0]
+            closeButton.click()
+        }
+    '''))
+
+
 def main():
     args = parse_args()
 
@@ -357,6 +367,7 @@ def main():
     for job_id in args.job_ids:
         job_posts_page_url = f"{gh_url}/plans/{job_id}/jobapp"
         browser.get(job_posts_page_url)
+        remove_tooltips(browser)
         wait = ui.WebDriverWait(browser, 60)  # timeout after 60 seconds
 
         if args.reset_all:
