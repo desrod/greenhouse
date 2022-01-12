@@ -172,27 +172,25 @@ def sso_authenticate(browser, args):
 
     browser.get(gh_url)
     # click Accept Cookies button
-    accept_cookies_btn = browser.find_elements_by_xpath(
-        '//*[@id="cookie-policy-button-accept"]'
-    )
+    accept_cookies_btn = browser.find_elements(By.XPATH, '//*[@id="cookie-policy-button-accept"]')
     if accept_cookies_btn:
         accept_cookies_btn[0].click()
 
     # enter Ubuntu SSO email and password
-    email_txt = browser.find_element_by_id("id_email")
+    email_txt = browser.find_element(By.ID, "id_email")
     if email_txt:
         email_txt.send_keys(ghsso_user)
 
-    password_txt = browser.find_element_by_id("id_password")
+    password_txt = browser.find_element(By.ID, "id_password")
     if password_txt:
         password_txt.send_keys(ghsso_pass)
 
-    continue_btn = browser.find_elements_by_xpath('//button[@name="continue"]')
+    continue_btn = browser.find_elements(By.XPATH, '//button[@name="continue"]')
     if continue_btn:
         continue_btn[0].click()
 
     # accept cookies so the popup doesn't obstruct clicks
-    cookie_accept_btn = browser.find_elements_by_css_selector("#inform-cookies button")
+    cookie_accept_btn = browser.find_elements(By.CSS_SELECTOR, "#inform-cookies button")
     for btn in cookie_accept_btn:
         try:
             # click can raise if element exists but is in a hidden block
@@ -201,23 +199,21 @@ def sso_authenticate(browser, args):
             pass
 
     # click "Got it" button for new tips
-    got_it_btn = browser.find_elements_by_xpath('//a[text()="Got it"]')
+    got_it_btn = browser.find_elements(By.XPATH, '//a[text()="Got it"]')
     if got_it_btn:
         got_it_btn[0].click()
 
     # minimize trays so they don't obstruct clicks
-    trays = browser.find_elements_by_xpath('//div[@data-provides="tray-close"]')
+    trays = browser.find_elements(By.XPATH, '//div[@data-provides="tray-close"]')
     for tray in trays:
         tray.click()
 
     if args.headless:
         mfa_token = input("Enter your 2FA token: ")
         time.sleep(0.2)
-        mfa_txt = browser.find_element_by_xpath('//*[@id="id_oath_token"]')
+        mfa_txt = browser.find_element(By.XPATH, '//*[@id="id_oath_token"]')
         mfa_txt.send_keys(mfa_token)
-        auth_button = browser.find_elements_by_xpath('//*[@id="login-form"]/button')[
-            0
-        ].click()
+        auth_button = browser.find_elements(By.XPATH, '//*[@id="login-form"]/button')[0].click()
 
 
 ###############################################################
@@ -377,13 +373,14 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             job_locations = wait.until(
-                lambda browser: browser.find_elements_by_class_name(
+                lambda browser: browser.find_elements(
+                    By.CLASS_NAME,
                     "job-application__offices"
                 )
             )
-            job_names = browser.find_elements_by_class_name("job-application__name")
-            job_ids = browser.find_elements_by_class_name("job-edit-pencil")
-            job_types = browser.find_elements_by_class_name("board-column")
+            job_names = browser.find_elements(By.CLASS_NAME, "job-application__name")
+            job_ids = browser.find_elements(By.CLASS_NAME, "job-edit-pencil")
+            job_types = browser.find_elements(By.CLASS_NAME, "board-column")
 
             # harvest job details from each page of results
             existing_types += [result.text for result in job_types]
@@ -393,7 +390,7 @@ def main():
             existing_names += [result.text.split("\n")[0] for result in job_names]
             existing_locations += [result.text.strip("()") for result in job_locations]
 
-            next_page = browser.find_elements_by_class_name("next_page")
+            next_page = browser.find_elements(By.CLASS_NAME, "next_page")
             if not next_page:
                 break
 
@@ -451,7 +448,7 @@ def main():
                     time.sleep(1.5)
 
                     browser.refresh()
-                    job_name_txt = browser.find_elements_by_xpath(
+                    job_name_txt = browser.find_elements(By.XPATH, 
                         '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
                     )[0]
 
@@ -464,13 +461,13 @@ def main():
                     job_name_txt.clear()
                     job_name_txt.send_keys(job_name)
 
-                    post_to = browser.find_elements_by_xpath(
+                    post_to = browser.find_elements(By.XPATH, 
                         '//label[text()="Post To"]/..//input[1]'
                     )[0]
                     post_to.send_keys(JOB_BOARD)
                     post_to.send_keys(Keys.ENTER)
 
-                    location = browser.find_elements_by_xpath(
+                    location = browser.find_elements(By.XPATH, 
                         '//label[text()="Location"]/..//input[1]'
                     )[0]
                     location.clear()
@@ -478,18 +475,18 @@ def main():
 
                     ## Publish the posts out to our external partner sites
                     # try:
-                    #     browser.find_elements_by_xpath('//label[text()="Glassdoor"]/input[1]')[0].click()
+                    #     browser.find_elements(By.XPATH, '//label[text()="Glassdoor"]/input[1]')[0].click()
                     # except:
                     #     print("INFO: Glassdoor board not available at the moment")
 
                     try:
-                        browser.find_elements_by_xpath(
+                        browser.find_elements(By.XPATH, 
                             '//label[text()="Indeed"]/input[1]'
                         )[0].click()
                     except:
                         print("INFO: Indeed board not available at the moment")
 
-                    publish_location = browser.find_elements_by_xpath(
+                    publish_location = browser.find_elements(By.XPATH, 
                         '//input[@placeholder="Select location"]'
                     )[0]
                     publish_location.clear()
@@ -500,21 +497,21 @@ def main():
                         f'/div[contains(text(), "{publish_location_text}")]'
                     )
                     location_choices = wait.until(
-                        lambda browser: browser.find_elements_by_xpath(popup_menu_xpath)
+                        lambda browser: browser.find_elements(By.XPATH, popup_menu_xpath)
                     )
                     publish_location.send_keys(Keys.DOWN)
                     publish_location.send_keys(Keys.TAB)
-                    browser.find_elements_by_xpath('//label[text()="Remote"]/input[1]')[
+                    browser.find_elements(By.XPATH, '//label[text()="Remote"]/input[1]')[
                         0
                     ].click()
                     time.sleep(0.5)
 
                     # click the Save button
-                    save_btn = browser.find_elements_by_xpath('//a[text()="Save"]')[0]
+                    save_btn = browser.find_elements(By.XPATH, '//a[text()="Save"]')[0]
                     save_btn.click()
 
                     wait.until(
-                        lambda browser: browser.find_elements_by_class_name(
+                        lambda browser: browser.find_elements(By.CLASS_NAME, 
                             "job-application__offices"
                         )
                     )
@@ -529,20 +526,20 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             wait.until(
-                lambda browser: browser.find_elements_by_class_name(
+                lambda browser: browser.find_elements(By.CLASS_NAME, 
                     "job-application__offices"
                 )
             )
 
             ## Click the "Enable" button on each new post created, to make it live
-            publish_btns = browser.find_elements_by_xpath(
+            publish_btns = browser.find_elements(By.XPATH, 
                 '//tr[@class="job-application draft external"]//img[@class="publish-application-button"]'
             )
             for btn in publish_btns:
                 btn.click()
                 time.sleep(0.5)
 
-            next_page = browser.find_elements_by_class_name("next_page")
+            next_page = browser.find_elements(By.CLASS_NAME, "next_page")
             if not next_page:
                 break
 
