@@ -367,8 +367,8 @@ def main():
     for job_id in args.job_ids:
         job_posts_page_url = f"{gh_url}/plans/{job_id}/jobapp"
         browser.get(job_posts_page_url)
-        remove_tooltips(browser)
         wait = ui.WebDriverWait(browser, 60)  # timeout after 60 seconds
+        remove_tooltips(browser)
 
         if args.reset_all:
             delete_posts(browser, wait, job_id)
