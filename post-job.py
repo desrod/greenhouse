@@ -323,7 +323,7 @@ def remove_tooltips(browser):
             """
             const tooltipElements = document.getElementsByClassName("introjs-tooltiptext")
             if (tooltipElements.length) {
-                const closeButton = tooltip_elements[0].getElementsByClassName("close")[0]
+                const closeButton = tooltipElements[0].getElementsByClassName("close")[0]
                 closeButton.click()
             }"""
         )
