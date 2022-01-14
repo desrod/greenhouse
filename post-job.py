@@ -4,14 +4,12 @@ import argparse
 import json
 import os
 import time
-from re import search
+from textwrap import dedent
 
 import selenium
 import selenium.webdriver.support.ui as ui
 from appdirs import user_data_dir
 from selenium import webdriver
-
-# from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -21,131 +19,131 @@ JOB_BOARD = "Canonical - Jobs"
 JOB_BOARDS_PROTECTED = ["Canonical", "INTERNAL"]
 
 REGIONS = {
-    'americas': [
+    "americas": [
         # United States
-        'Home based - Americas, Anchorage',
-        'Home based - Americas, Atlanta',
-        'Home based - Americas, Austin',
-        'Home based - Americas, Boston',
-        'Home based - Americas, Charlotte',
-        'Home based - Americas, Chicago',
-        'Home based - Americas, Dallas',
-        'Home based - Americas, Honolulu',
-        'Home based - Americas, Houston',
-        'Home based - Americas, Los Angeles',
-        'Home based - Americas, Madison',
-        'Home based - Americas, Miami',
-        'Home based - Americas, New York',
-        'Home based - Americas, Omaha',
-        'Home based - Americas, Philadelphia',
-        'Home based - Americas, Phoenix',
-        'Home based - Americas, Pittsburgh',
-        'Home based - Americas, Portland',
-        'Home based - Americas, Raleigh',
-        'Home based - Americas, Sacramento',
-        'Home based - Americas, San Diego',
-        'Home based - Americas, San Francisco',
-        'Home based - Americas, Salt Lake City',
-        'Home based - Americas, Seattle',
-        'Home based - Americas, Washington',
+        "Home based - Americas, Anchorage",
+        "Home based - Americas, Atlanta",
+        "Home based - Americas, Austin",
+        "Home based - Americas, Boston",
+        "Home based - Americas, Charlotte",
+        "Home based - Americas, Chicago",
+        "Home based - Americas, Dallas",
+        "Home based - Americas, Honolulu",
+        "Home based - Americas, Houston",
+        "Home based - Americas, Los Angeles",
+        "Home based - Americas, Madison",
+        "Home based - Americas, Miami",
+        "Home based - Americas, New York",
+        "Home based - Americas, Omaha",
+        "Home based - Americas, Philadelphia",
+        "Home based - Americas, Phoenix",
+        "Home based - Americas, Pittsburgh",
+        "Home based - Americas, Portland",
+        "Home based - Americas, Raleigh",
+        "Home based - Americas, Sacramento",
+        "Home based - Americas, San Diego",
+        "Home based - Americas, San Francisco",
+        "Home based - Americas, Salt Lake City",
+        "Home based - Americas, Seattle",
+        "Home based - Americas, Washington",
         # Canada
-        'Home based - Americas, Calgary',
-        'Home based - Americas, Montreal',
-        'Home based - Americas, Ottawa',
-        'Home based - Americas, Toronto',
-        'Home based - Americas, Vancouver',
+        "Home based - Americas, Calgary",
+        "Home based - Americas, Montreal",
+        "Home based - Americas, Ottawa",
+        "Home based - Americas, Toronto",
+        "Home based - Americas, Vancouver",
         # South America
-        'Home based - Americas, Belo Horizonte',
-        'Home based - Americas, Buenos Aires',
-        'Home based - Americas, Bogota',
-        'Home based - Americas, Caracas',
-        'Home based - Americas, Córdoba',
-        'Home based - Americas, Curitiba',
-        'Home based - Americas, Florianópolis',
-        'Home based - Americas, Guadalajara',
-        'Home based - Americas, Lima',
-        'Home based - Americas, Manaus',
-        'Home based - Americas, Monterrey',
-        'Home based - Americas, Mexico City',
-        'Home based - Americas, Porto Alegre',
-        'Home based - Americas, Rio de Janeiro',
-        'Home based - Americas, Santiago',
-        'Home based - Americas, São Paulo',
+        "Home based - Americas, Belo Horizonte",
+        "Home based - Americas, Buenos Aires",
+        "Home based - Americas, Bogota",
+        "Home based - Americas, Caracas",
+        "Home based - Americas, Córdoba",
+        "Home based - Americas, Curitiba",
+        "Home based - Americas, Florianópolis",
+        "Home based - Americas, Guadalajara",
+        "Home based - Americas, Lima",
+        "Home based - Americas, Manaus",
+        "Home based - Americas, Monterrey",
+        "Home based - Americas, Mexico City",
+        "Home based - Americas, Porto Alegre",
+        "Home based - Americas, Rio de Janeiro",
+        "Home based - Americas, Santiago",
+        "Home based - Americas, São Paulo",
     ],
-    'emea': [
-        'Home based - Africa, Accra',
-        'Home based - Africa, Cairo',
-        'Home based - Africa, Cape Town',
-        'Home based - Africa, Lagos',
-        'Home based - Africa, Nairobi',
-        'Home based - Europe, Amsterdam',
-        'Home based - Europe, Ankara',
-        'Home based - Europe, Barcelona',
-        'Home based - Europe, Berlin',
-        'Home based - Europe, Bratislava',
-        'Home based - Europe, Brno',
-        'Home based - Europe, Brussels',
-        'Home based - Europe, Bucharest',
-        'Home based - Europe, Budapest',
-        'Home based - Europe, Cluj-Napoca',
-        'Home based - Europe, Dublin',
-        'Home based - Europe, Edinburgh',
-        'Home based - Europe, Frankfurt',
-        'Home based - Europe, Glasgow',
-        'Home based - Europe, Helsinki',
-        'Home based - Europe, Istanbul',
-        'Home based - Europe, Kraków',
-        'Home based - Europe, Lisbon',
-        'Home based - Europe, Ljubljana',
-        'Home based - Europe, London',
-        'Home based - Europe, Lyon',
-        'Home based - Europe, Madrid',
-        'Home based - Europe, Manchester',
-        'Home based - Europe, Marousi', # Athens
-        'Home based - Europe, Milan',
-        'Home based - Europe, Moscow',
-        'Home based - Europe, Munich',
-        'Home based - Europe, Oslo',
-        'Home based - Europe, Paris',
-        'Home based - Europe, Plovdiv',
-        'Home based - Europe, Prague',
-        'Home based - Europe, Riga',
-        'Home based - Europe, Rome',
-        'Home based - Europe, Sofia',
-        'Home based - Europe, St. Petersburg',
-        'Home based - Europe, Stockholm',
-        'Home based - Europe, Tallinn',
-        'Home based - Europe, Timișoara',
-        'Home based - Europe, Vienna',
-        'Home based - Europe, Vilnius',
-        'Home based - Europe, Warsaw',
-        'Home based - Europe, Wrocław',
-        'Home based - Europe, Zagreb',
+    "emea": [
+        "Home based - Africa, Accra",
+        "Home based - Africa, Cairo",
+        "Home based - Africa, Cape Town",
+        "Home based - Africa, Lagos",
+        "Home based - Africa, Nairobi",
+        "Home based - Europe, Amsterdam",
+        "Home based - Europe, Ankara",
+        "Home based - Europe, Barcelona",
+        "Home based - Europe, Berlin",
+        "Home based - Europe, Bratislava",
+        "Home based - Europe, Brno",
+        "Home based - Europe, Brussels",
+        "Home based - Europe, Bucharest",
+        "Home based - Europe, Budapest",
+        "Home based - Europe, Cluj-Napoca",
+        "Home based - Europe, Dublin",
+        "Home based - Europe, Edinburgh",
+        "Home based - Europe, Frankfurt",
+        "Home based - Europe, Glasgow",
+        "Home based - Europe, Helsinki",
+        "Home based - Europe, Istanbul",
+        "Home based - Europe, Kraków",
+        "Home based - Europe, Lisbon",
+        "Home based - Europe, Ljubljana",
+        "Home based - Europe, London",
+        "Home based - Europe, Lyon",
+        "Home based - Europe, Madrid",
+        "Home based - Europe, Manchester",
+        "Home based - Europe, Marousi",  # Athens
+        "Home based - Europe, Milan",
+        "Home based - Europe, Moscow",
+        "Home based - Europe, Munich",
+        "Home based - Europe, Oslo",
+        "Home based - Europe, Paris",
+        "Home based - Europe, Plovdiv",
+        "Home based - Europe, Prague",
+        "Home based - Europe, Riga",
+        "Home based - Europe, Rome",
+        "Home based - Europe, Sofia",
+        "Home based - Europe, St. Petersburg",
+        "Home based - Europe, Stockholm",
+        "Home based - Europe, Tallinn",
+        "Home based - Europe, Timișoara",
+        "Home based - Europe, Vienna",
+        "Home based - Europe, Vilnius",
+        "Home based - Europe, Warsaw",
+        "Home based - Europe, Wrocław",
+        "Home based - Europe, Zagreb",
     ],
-    'apac': [
-        'Home based - Asia Pacific, Auckland',
-        'Home based - Asia Pacific, Bangalore',
-        'Home based - Asia Pacific, Beijing',
-        'Home based - Asia Pacific, Brisbane',
-        'Home based - Asia Pacific, Chennai',
-        'Home based - Asia Pacific, Christchurch',
-        'Home based - Asia Pacific, Delhi',
-        'Home based - Asia Pacific, Gurgaon',
-        'Home based - Asia Pacific, Hangzhou',
-        'Home based - Asia Pacific, Hsinchu',
-        'Home based - Asia Pacific, Hong Kong',
-        'Home based - Asia Pacific, Hyderabad',
-        'Home based - Asia Pacific, Melbourne',
-        'Home based - Asia Pacific, Mumbai',
-        'Home based - Asia Pacific, Pune',
-        'Home based - Asia Pacific, Seoul',
-        'Home based - Asia Pacific, Shanghai',
-        'Home based - Asia Pacific, Singapore',
-        'Home based - Asia Pacific, Sydney',
-        'Home based - Asia Pacific, Taipei',
-        'Home based - Asia Pacific, Tokyo',
-        'Home based - Asia Pacific, Wellington',
-    ]
+    "apac": [
+        "Home based - Asia Pacific, Auckland",
+        "Home based - Asia Pacific, Bangalore",
+        "Home based - Asia Pacific, Beijing",
+        "Home based - Asia Pacific, Brisbane",
+        "Home based - Asia Pacific, Chennai",
+        "Home based - Asia Pacific, Christchurch",
+        "Home based - Asia Pacific, Delhi",
+        "Home based - Asia Pacific, Gurgaon",
+        "Home based - Asia Pacific, Hangzhou",
+        "Home based - Asia Pacific, Hsinchu",
+        "Home based - Asia Pacific, Hong Kong",
+        "Home based - Asia Pacific, Hyderabad",
+        "Home based - Asia Pacific, Melbourne",
+        "Home based - Asia Pacific, Mumbai",
+        "Home based - Asia Pacific, Pune",
+        "Home based - Asia Pacific, Seoul",
+        "Home based - Asia Pacific, Shanghai",
+        "Home based - Asia Pacific, Singapore",
+        "Home based - Asia Pacific, Sydney",
+        "Home based - Asia Pacific, Taipei",
+        "Home based - Asia Pacific, Tokyo",
+        "Home based - Asia Pacific, Wellington",
+    ],
 }
 
 ###############################################################
@@ -172,6 +170,7 @@ def sso_authenticate(browser, args):
 
     browser.get(gh_url)
     # click Accept Cookies button
+
     accept_cookies_btn = browser.find_elements(By.XPATH, '//*[@id="cookie-policy-button-accept"]')
     if accept_cookies_btn:
         accept_cookies_btn[0].click()
@@ -219,7 +218,6 @@ def sso_authenticate(browser, args):
 ###############################################################
 def delete_posts(browser, wait, job_id):
     browser.get(f"{gh_url}/plans/{job_id}/jobapp")
-
     job_post_offset = 0
     while True:
         browser.refresh()
@@ -231,6 +229,7 @@ def delete_posts(browser, wait, job_id):
                 )
             )
         )
+
         if job_posts == job_post_offset:
             break
 
@@ -316,6 +315,21 @@ def parse_args():
 
 
 ###############################################################
+
+
+def remove_tooltips(browser):
+    browser.execute_script(
+        dedent(
+            """
+            const tooltipElements = document.getElementsByClassName("introjs-tooltiptext")
+            if (tooltipElements.length) {
+                const closeButton = tooltip_elements[0].getElementsByClassName("close")[0]
+                closeButton.click()
+            }"""
+        )
+    )
+
+
 def main():
     args = parse_args()
 
@@ -354,6 +368,7 @@ def main():
         job_posts_page_url = f"{gh_url}/plans/{job_id}/jobapp"
         browser.get(job_posts_page_url)
         wait = ui.WebDriverWait(browser, 60)  # timeout after 60 seconds
+        remove_tooltips(browser)
 
         if args.reset_all:
             delete_posts(browser, wait, job_id)
@@ -373,10 +388,7 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             job_locations = wait.until(
-                lambda browser: browser.find_elements(
-                    By.CLASS_NAME,
-                    "job-application__offices"
-                )
+                lambda browser: browser.find_elements(By.CLASS_NAME, "job-application__offices")
             )
             job_names = browser.find_elements(By.CLASS_NAME, "job-application__name")
             job_ids = browser.find_elements(By.CLASS_NAME, "job-edit-pencil")
@@ -384,9 +396,7 @@ def main():
 
             # harvest job details from each page of results
             existing_types += [result.text for result in job_types]
-            existing_ids += [
-                result.get_attribute("href").split("/")[4] for result in job_ids
-            ]
+            existing_ids += [result.get_attribute("href").split("/")[4] for result in job_ids]
             existing_names += [result.text.split("\n")[0] for result in job_names]
             existing_locations += [result.text.strip("()") for result in job_locations]
 
@@ -411,16 +421,12 @@ def main():
             canonical_list = [args.limit]
         else:
             canonical_list = [
-                existing_ids[i]
-                for i, x in enumerate(existing_types)
-                if x in JOB_BOARDS_PROTECTED
+                existing_ids[i] for i, x in enumerate(existing_types) if x in JOB_BOARDS_PROTECTED
             ]
 
         for canonical_job_id in canonical_list:
             canonical_job_name = [
-                existing_names[i]
-                for i, x in enumerate(existing_ids)
-                if canonical_job_id == x
+                existing_names[i] for i, x in enumerate(existing_ids) if canonical_job_id == x
             ][0]
             limited_locations = [
                 existing_locations[i]
@@ -448,27 +454,23 @@ def main():
                     time.sleep(1.5)
 
                     browser.refresh()
-                    job_name_txt = browser.find_elements(By.XPATH, 
-                        '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
+                    job_name_txt = browser.find_elements(
+                        By.XPATH, '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
                     )[0]
 
-                    job_name = (
-                        job_name_txt.get_attribute("value")
-                        .replace("Copy of ", "")
-                        .strip()
-                    )
+                    job_name = job_name_txt.get_attribute("value").replace("Copy of ", "").strip()
 
                     job_name_txt.clear()
                     job_name_txt.send_keys(job_name)
 
-                    post_to = browser.find_elements(By.XPATH, 
-                        '//label[text()="Post To"]/..//input[1]'
+                    post_to = browser.find_elements(
+                        By.XPATH, '//label[text()="Post To"]/..//input[1]'
                     )[0]
                     post_to.send_keys(JOB_BOARD)
                     post_to.send_keys(Keys.ENTER)
 
-                    location = browser.find_elements(By.XPATH, 
-                        '//label[text()="Location"]/..//input[1]'
+                    location = browser.find_elements(
+                        By.XPATH, '//label[text()="Location"]/..//input[1]'
                     )[0]
                     location.clear()
                     location.send_keys(location_text)
@@ -480,14 +482,14 @@ def main():
                     #     print("INFO: Glassdoor board not available at the moment")
 
                     try:
-                        browser.find_elements(By.XPATH, 
-                            '//label[text()="Indeed"]/input[1]'
-                        )[0].click()
+                        browser.find_elements(By.XPATH, '//label[text()="Indeed"]/input[1]')[
+                            0
+                        ].click()
                     except:
                         print("INFO: Indeed board not available at the moment")
 
-                    publish_location = browser.find_elements(By.XPATH, 
-                        '//input[@placeholder="Select location"]'
+                    publish_location = browser.find_elements(
+                        By.XPATH, '//input[@placeholder="Select location"]'
                     )[0]
                     publish_location.clear()
                     publish_location.send_keys(publish_location_text)
@@ -501,9 +503,8 @@ def main():
                     )
                     publish_location.send_keys(Keys.DOWN)
                     publish_location.send_keys(Keys.TAB)
-                    browser.find_elements(By.XPATH, '//label[text()="Remote"]/input[1]')[
-                        0
-                    ].click()
+
+                    browser.find_elements(By.XPATH, '//label[text()="Remote"]/input[1]')[0].click()
                     time.sleep(0.5)
 
                     # click the Save button
@@ -511,8 +512,8 @@ def main():
                     save_btn.click()
 
                     wait.until(
-                        lambda browser: browser.find_elements(By.CLASS_NAME, 
-                            "job-application__offices"
+                        lambda browser: browser.find_elements(
+                            By.CLASS_NAME, "job-application__offices"
                         )
                     )
 
@@ -526,14 +527,13 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             wait.until(
-                lambda browser: browser.find_elements(By.CLASS_NAME, 
-                    "job-application__offices"
-                )
+                lambda browser: browser.find_elements(By.CLASS_NAME, "job-application__offices")
             )
 
             ## Click the "Enable" button on each new post created, to make it live
-            publish_btns = browser.find_elements(By.XPATH, 
-                '//tr[@class="job-application draft external"]//img[@class="publish-application-button"]'
+            publish_btns = browser.find_elements(
+                By.XPATH,
+                '//tr[@class="job-application draft external"]//img[@class="publish-application-button"]',
             )
             for btn in publish_btns:
                 btn.click()
