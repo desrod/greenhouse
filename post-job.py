@@ -384,7 +384,7 @@ def main():
         print(f"[Harvesting job details]")
         while True:
             print(f"-> Processing page {page}")
-            time.sleep(1.5)
+            time.sleep(3.5)
 
             # Ensure page navigation and job details have had sufficient time to load
             job_locations = wait.until(
@@ -414,7 +414,7 @@ def main():
         # return to first page of job posts
         if multipage:
             browser.get(job_posts_page_url)
-            time.sleep(1.5)
+            time.sleep(3.5)
 
         # Process updates for each `Canonical` job unless a limit arg is passed
         if args.limit:
@@ -451,13 +451,12 @@ def main():
                     browser.get(
                         f"{job_posts_page_url}s/new?from=duplicate&amp;greenhouse_job_application_id={canonical_job_id}"
                     )
-                    time.sleep(1.5)
+                    time.sleep(3.5)
 
                     browser.refresh()
                     job_name_txt = browser.find_elements(
-                        By.XPATH, '//input[contains(@class, "Input__InputElem-ipbxf8-0")]'
+                        By.XPATH, '//input[contains(@class, "Input__InputElem-sc-ipbxf8-0")]'
                     )[0]
-
                     job_name = job_name_txt.get_attribute("value").replace("Copy of ", "").strip()
 
                     job_name_txt.clear()
@@ -523,7 +522,7 @@ def main():
 
         while True:
             print(f"-> Processing page {page}")
-            time.sleep(1.5)
+            time.sleep(3.5)
 
             # Ensure page navigation and job details have had sufficient time to load
             wait.until(
