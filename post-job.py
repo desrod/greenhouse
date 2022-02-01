@@ -92,6 +92,7 @@ REGIONS = {
         "Home based - Africa, Nairobi",
         "Home based - Europe, Amsterdam",
         "Home based - Europe, Ankara",
+        "Home based - Europe, Athens",
         "Home based - Europe, Barcelona",
         "Home based - Europe, Berlin",
         "Home based - Europe, Bratislava",
@@ -102,7 +103,9 @@ REGIONS = {
         "Home based - Europe, Cluj-Napoca",
         "Home based - Europe, Dublin",
         "Home based - Europe, Edinburgh",
+        "Home based - Europe, Eindhoven",
         "Home based - Europe, Frankfurt",
+        "Home based - Europe, Gdańsk",
         "Home based - Europe, Glasgow",
         "Home based - Europe, Helsinki",
         "Home based - Europe, Istanbul",
@@ -128,6 +131,7 @@ REGIONS = {
         "Home based - Europe, Stockholm",
         "Home based - Europe, Tallinn",
         "Home based - Europe, Timișoara",
+        "Home based - Europe, Thessaloniki",
         "Home based - Europe, Vienna",
         "Home based - Europe, Vilnius",
         "Home based - Europe, Warsaw",
@@ -185,7 +189,9 @@ def sso_authenticate(browser, args):
     browser.get(gh_url)
     # click Accept Cookies button
 
-    accept_cookies_btn = browser.find_elements(By.XPATH, '//*[@id="cookie-policy-button-accept"]')
+    accept_cookies_btn = browser.find_elements(
+        By.XPATH, '//*[@id="cookie-policy-button-accept"]'
+    )
     if accept_cookies_btn:
         accept_cookies_btn[0].click()
 
@@ -226,7 +232,9 @@ def sso_authenticate(browser, args):
         time.sleep(0.2)
         mfa_txt = browser.find_element(By.XPATH, '//*[@id="id_oath_token"]')
         mfa_txt.send_keys(mfa_token)
-        auth_button = browser.find_elements(By.XPATH, '//*[@id="login-form"]/button')[0].click()
+        auth_button = browser.find_elements(By.XPATH, '//*[@id="login-form"]/button')[
+            0
+        ].click()
 
 
 ###############################################################
@@ -293,11 +301,7 @@ def parse_args():
         "--region",
         dest="regions",
         nargs="+",
-        choices=[
-            "americas",
-            "emea",
-            "apac",
-        ],
+        choices=sorted(REGIONS.keys()),
         help="The regions in which to create job postings",
     )
 
@@ -402,7 +406,9 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             job_locations = wait.until(
-                lambda browser: browser.find_elements(By.CLASS_NAME, "job-application__offices")
+                lambda browser: browser.find_elements(
+                    By.CLASS_NAME, "job-application__offices"
+                )
             )
             job_names = browser.find_elements(By.CLASS_NAME, "job-application__name")
             job_ids = browser.find_elements(By.CLASS_NAME, "job-edit-pencil")
@@ -410,7 +416,9 @@ def main():
 
             # harvest job details from each page of results
             existing_types += [result.text for result in job_types]
-            existing_ids += [result.get_attribute("href").split("/")[4] for result in job_ids]
+            existing_ids += [
+                result.get_attribute("href").split("/")[4] for result in job_ids
+            ]
             existing_names += [result.text.split("\n")[0] for result in job_names]
             existing_locations += [result.text.strip("()") for result in job_locations]
 
@@ -435,12 +443,16 @@ def main():
             canonical_list = [args.limit]
         else:
             canonical_list = [
-                existing_ids[i] for i, x in enumerate(existing_types) if x in JOB_BOARDS_PROTECTED
+                existing_ids[i]
+                for i, x in enumerate(existing_types)
+                if x in JOB_BOARDS_PROTECTED
             ]
 
         for canonical_job_id in canonical_list:
             canonical_job_name = [
-                existing_names[i] for i, x in enumerate(existing_ids) if canonical_job_id == x
+                existing_names[i]
+                for i, x in enumerate(existing_ids)
+                if canonical_job_id == x
             ][0]
             limited_locations = [
                 existing_locations[i]
@@ -469,9 +481,14 @@ def main():
 
                     browser.refresh()
                     job_name_txt = browser.find_elements(
-                        By.XPATH, '//input[contains(@class, "Input__InputElem-sc-ipbxf8-0")]'
+                        By.XPATH,
+                        '//input[contains(@class, "Input__InputElem-sc-ipbxf8-0")]',
                     )[0]
-                    job_name = job_name_txt.get_attribute("value").replace("Copy of ", "").strip()
+                    job_name = (
+                        job_name_txt.get_attribute("value")
+                        .replace("Copy of ", "")
+                        .strip()
+                    )
 
                     job_name_txt.clear()
                     job_name_txt.send_keys(job_name)
@@ -495,9 +512,9 @@ def main():
                     #     print("INFO: Glassdoor board not available at the moment")
 
                     try:
-                        browser.find_elements(By.XPATH, '//label[text()="Indeed"]/input[1]')[
-                            0
-                        ].click()
+                        browser.find_elements(
+                            By.XPATH, '//label[text()="Indeed"]/input[1]'
+                        )[0].click()
                     except:
                         print("INFO: Indeed board not available at the moment")
 
@@ -512,12 +529,16 @@ def main():
                         f'/div[contains(text(), "{publish_location_text}")]'
                     )
                     location_choices = wait.until(
-                        lambda browser: browser.find_elements(By.XPATH, popup_menu_xpath)
+                        lambda browser: browser.find_elements(
+                            By.XPATH, popup_menu_xpath
+                        )
                     )
                     publish_location.send_keys(Keys.DOWN)
                     publish_location.send_keys(Keys.TAB)
 
-                    browser.find_elements(By.XPATH, '//label[text()="Remote"]/input[1]')[0].click()
+                    browser.find_elements(
+                        By.XPATH, '//label[text()="Remote"]/input[1]'
+                    )[0].click()
                     time.sleep(0.5)
 
                     # click the Save button
@@ -540,7 +561,9 @@ def main():
 
             # Ensure page navigation and job details have had sufficient time to load
             wait.until(
-                lambda browser: browser.find_elements(By.CLASS_NAME, "job-application__offices")
+                lambda browser: browser.find_elements(
+                    By.CLASS_NAME, "job-application__offices"
+                )
             )
 
             ## Click the "Enable" button on each new post created, to make it live
