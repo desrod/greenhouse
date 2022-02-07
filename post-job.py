@@ -234,6 +234,7 @@ def delete_posts(browser, wait, job_id):
     browser.get(f"{gh_url}/plans/{job_id}/jobapp")
     job_post_offset = 0
     while True:
+        remove_tooltips(browser)
         browser.refresh()
 
         job_posts = len(
@@ -382,7 +383,6 @@ def main():
         job_posts_page_url = f"{gh_url}/plans/{job_id}/jobapp"
         browser.get(job_posts_page_url)
         wait = ui.WebDriverWait(browser, 60)  # timeout after 60 seconds
-        remove_tooltips(browser)
 
         if args.reset_all:
             delete_posts(browser, wait, job_id)
@@ -399,6 +399,7 @@ def main():
         while True:
             print(f"-> Processing page {page}")
             time.sleep(3.5)
+            remove_tooltips(browser)
 
             # Ensure page navigation and job details have had sufficient time to load
             job_locations = wait.until(
@@ -466,6 +467,7 @@ def main():
                         f"{job_posts_page_url}s/new?from=duplicate&amp;greenhouse_job_application_id={canonical_job_id}"
                     )
                     time.sleep(3.5)
+                    remove_tooltips(browser)
 
                     browser.refresh()
                     job_name_txt = browser.find_elements(
