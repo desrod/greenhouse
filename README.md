@@ -14,9 +14,9 @@
 ```bash
 git clone https://github.com/desrod/greenhouse
 cd greenhouse
-python3 -m venv .env
-source .env/bin/activate
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
 ```
 
 If you are using Chrome you'll need to install the appropriate version
