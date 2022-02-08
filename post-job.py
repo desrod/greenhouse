@@ -6,6 +6,7 @@ import os
 import time
 from textwrap import dedent
 
+import psutil
 import selenium
 import selenium.webdriver.support.ui as ui
 from appdirs import user_data_dir
@@ -18,182 +19,22 @@ gh_url = "https://canonical.greenhouse.io"
 JOB_BOARD = "Canonical - Jobs"
 JOB_BOARDS_PROTECTED = ["Canonical", "INTERNAL"]
 
-REGIONS = {
-    "americas": [
-        # United States
-        "Home based - Americas, Albany",
-        "Home based - Americas, Anchorage",
-        "Home based - Americas, Atlanta",
-        "Home based - Americas, Austin",
-        "Home based - Americas, Baltimore",
-        "Home based - Americas, Boston",
-        "Home based - Americas, Buffalo",
-        "Home based - Americas, Charlotte",
-        "Home based - Americas, Chicago",
-        "Home based - Americas, Cincinnati",
-        "Home based - Americas, Cleveland",
-        "Home based - Americas, Dallas",
-        "Home based - Americas, Dayton",
-        "Home based - Americas, Detroit",
-        "Home based - Americas, Honolulu",
-        "Home based - Americas, Houston",
-        "Home based - Americas, Kansas City",
-        "Home based - Americas, Los Angeles",
-        "Home based - Americas, Madison",
-        "Home based - Americas, Miami",
-        "Home based - Americas, Milwaukee",
-        "Home based - Americas, Minneapolis",
-        "Home based - Americas, New York",
-        "Home based - Americas, Oklahoma City",
-        "Home based - Americas, Omaha",
-        "Home based - Americas, Philadelphia",
-        "Home based - Americas, Phoenix",
-        "Home based - Americas, Pittsburgh",
-        "Home based - Americas, Portland",
-        "Home based - Americas, Raleigh",
-        "Home based - Americas, Rochester",
-        "Home based - Americas, Sacramento",
-        "Home based - Americas, San Diego",
-        "Home based - Americas, San Francisco",
-        "Home based - Americas, Salt Lake City",
-        "Home based - Americas, Seattle",
-        "Home based - Americas, Tulsa",
-        "Home based - Americas, Wichita",
-        "Home based - Americas, Washington",
-        # Canada
-        "Home based - Americas, Calgary",
-        "Home based - Americas, Montreal",
-        "Home based - Americas, Ottawa",
-        "Home based - Americas, Toronto",
-        "Home based - Americas, Vancouver",
-        # South America
-        "Home based - Americas, Belo Horizonte",
-        "Home based - Americas, Buenos Aires",
-        "Home based - Americas, Bogota",
-        "Home based - Americas, Caracas",
-        "Home based - Americas, Córdoba",
-        "Home based - Americas, Curitiba",
-        "Home based - Americas, Florianópolis",
-        "Home based - Americas, Guadalajara",
-        "Home based - Americas, Lima",
-        "Home based - Americas, Manaus",
-        "Home based - Americas, Monterrey",
-        "Home based - Americas, Mexico City",
-        "Home based - Americas, Porto Alegre",
-        "Home based - Americas, Rio de Janeiro",
-        "Home based - Americas, Santiago",
-        "Home based - Americas, São Paulo",
-    ],
-    "us-boston": [
-        "Office based - Americas, Brockton, Massachusetts",
-        "Office based - Americas, Brookline, Massachusetts",
-        "Office based - Americas, Cambridge, Massachusetts",
-        "Office based - Americas, Cranston, Rhode Island",
-        "Office based - Americas, Fall River, Massachusetts",
-        "Office based - Americas, Framingham, Massachusetts",
-        "Office based - Americas, Haverhill, Massachusetts",
-        "Office based - Americas, Lawrence, Massachusetts",
-        "Office based - Americas, Lowell, Massachusetts",
-        "Office based - Americas, Lynn, Massachusetts",
-        "Office based - Americas, Malden, Massachusetts",
-        "Office based - Americas, Manchester, New Hampshire",
-        "Office based - Americas, Medford, Massachusetts",
-        "Office based - Americas, Methuen, Massachusetts",
-        "Office based - Americas, Nashua, New Hampshire",
-        "Office based - Americas, New Bedford, Massachusetts",
-        "Office based - Americas, Newton, Massachusetts",
-        "Office based - Americas, Pawtucket, Rhode Island",
-        "Office based - Americas, Peabody, Massachusetts",
-        "Office based - Americas, Plymouth, Massachusetts",
-        "Office based - Americas, Providence, Rhode Island",
-        "Office based - Americas, Quincy, Massachusetts",
-        "Office based - Americas, Revere, Massachusetts",
-        "Office based - Americas, Somerville, Massachusetts",
-        "Office based - Americas, Taunton, Massachusetts",
-        "Office based - Americas, Waltham, Massachusetts",
-        "Office based - Americas, Warwick, Rhode Island",
-        "Office based - Americas, Weymouth, Massachusetts",
-        "Office based - Americas, Worcester, Massachusetts",
-    ],
-    "emea": [
-        "Home based - Africa, Accra",
-        "Home based - Africa, Cairo",
-        "Home based - Africa, Cape Town",
-        "Home based - Africa, Lagos",
-        "Home based - Africa, Nairobi",
-        "Home based - Europe, Amsterdam",
-        "Home based - Europe, Ankara",
-        "Home based - Europe, Athens",
-        "Home based - Europe, Barcelona",
-        "Home based - Europe, Berlin",
-        "Home based - Europe, Bratislava",
-        "Home based - Europe, Brno",
-        "Home based - Europe, Brussels",
-        "Home based - Europe, Bucharest",
-        "Home based - Europe, Budapest",
-        "Home based - Europe, Cluj-Napoca",
-        "Home based - Europe, Dublin",
-        "Home based - Europe, Edinburgh",
-        "Home based - Europe, Eindhoven",
-        "Home based - Europe, Frankfurt",
-        "Home based - Europe, Gdańsk",
-        "Home based - Europe, Glasgow",
-        "Home based - Europe, Helsinki",
-        "Home based - Europe, Istanbul",
-        "Home based - Europe, Kraków",
-        "Home based - Europe, Lisbon",
-        "Home based - Europe, Ljubljana",
-        "Home based - Europe, London",
-        "Home based - Europe, Lyon",
-        "Home based - Europe, Madrid",
-        "Home based - Europe, Manchester",
-        "Home based - Europe, Marousi",  # Athens
-        "Home based - Europe, Milan",
-        "Home based - Europe, Moscow",
-        "Home based - Europe, Munich",
-        "Home based - Europe, Oslo",
-        "Home based - Europe, Paris",
-        "Home based - Europe, Plovdiv",
-        "Home based - Europe, Prague",
-        "Home based - Europe, Riga",
-        "Home based - Europe, Rome",
-        "Home based - Europe, Sofia",
-        "Home based - Europe, St. Petersburg",
-        "Home based - Europe, Stockholm",
-        "Home based - Europe, Tallinn",
-        "Home based - Europe, Timișoara",
-        "Home based - Europe, Thessaloniki",
-        "Home based - Europe, Vienna",
-        "Home based - Europe, Vilnius",
-        "Home based - Europe, Warsaw",
-        "Home based - Europe, Wrocław",
-        "Home based - Europe, Zagreb",
-    ],
-    "apac": [
-        "Home based - Asia Pacific, Auckland",
-        "Home based - Asia Pacific, Bangalore",
-        "Home based - Asia Pacific, Beijing",
-        "Home based - Asia Pacific, Brisbane",
-        "Home based - Asia Pacific, Chennai",
-        "Home based - Asia Pacific, Christchurch",
-        "Home based - Asia Pacific, Delhi",
-        "Home based - Asia Pacific, Gurgaon",
-        "Home based - Asia Pacific, Hangzhou",
-        "Home based - Asia Pacific, Hsinchu",
-        "Home based - Asia Pacific, Hong Kong",
-        "Home based - Asia Pacific, Hyderabad",
-        "Home based - Asia Pacific, Melbourne",
-        "Home based - Asia Pacific, Mumbai",
-        "Home based - Asia Pacific, Pune",
-        "Home based - Asia Pacific, Seoul",
-        "Home based - Asia Pacific, Shanghai",
-        "Home based - Asia Pacific, Singapore",
-        "Home based - Asia Pacific, Sydney",
-        "Home based - Asia Pacific, Taipei",
-        "Home based - Asia Pacific, Tokyo",
-        "Home based - Asia Pacific, Wellington",
-    ],
-}
+# Read cities from external manifest
+from cities import REGIONS
+
+
+###############################################################
+def clean_slate():
+    for proc in psutil.process_iter():
+        for browser_proc in ["geckodriver", "chromedriver"]:
+            try:
+                if browser_proc.lower() in proc.name().lower():
+                    print(f"Stale PID {proc.pid} was found, terminating...")
+                    proc.kill()
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                print("Not found!")
+                pass
+
 
 ###############################################################
 def parse_credentials():
@@ -263,9 +104,53 @@ def sso_authenticate(browser, args):
         time.sleep(0.2)
         mfa_txt = browser.find_element(By.XPATH, '//*[@id="id_oath_token"]')
         mfa_txt.send_keys(mfa_token)
-        auth_button = browser.find_elements(By.XPATH, '//*[@id="login-form"]/button')[
-            0
-        ].click()
+        browser.find_elements(By.XPATH, '//*[@id="login-form"]/button')[0].click()
+
+
+###############################################################
+def parse_args():
+    # print("Inside: parse_args()")
+    parser = argparse.ArgumentParser(
+        description="Duplicate Greenhouse job postings to multiple locations."
+    )
+    parser.add_argument(
+        "job_ids",
+        nargs="+",
+        help="The numeric Greenhouse job id (the number in the URL when on the Job Dashboard)",
+    )
+    parser.add_argument(
+        "--region",
+        dest="regions",
+        nargs="+",
+        choices=sorted(REGIONS.keys()),
+        help="The regions in which to create job postings",
+    )
+
+    parser.add_argument(
+        "--browser",
+        dest="browser",
+        choices=["chrome", "firefox"],
+        default="chrome",
+        help="The browser to use (default is chrome)",
+    )
+
+    parser.add_argument(
+        "--reset-all",
+        action="store_true",
+        help="Delete ALL posts under a given job_id (no --limit support)",
+    )
+
+    parser.add_argument(
+        "--headless", action="store_true", help="Run the automation without the GUI"
+    )
+
+    parser.add_argument(
+        "--limit", dest="limit", help="The specific job post to clone inside a REQ"
+    )
+
+    # arg parsing debug
+    # print(vars(parser.parse_args()))
+    return parser.parse_args()
 
 
 ###############################################################
@@ -319,54 +204,6 @@ def delete_posts(browser, wait, job_id):
 
 
 ###############################################################
-def parse_args():
-    # print("Inside: parse_args()")
-    parser = argparse.ArgumentParser(
-        description="Duplicate Greenhouse job postings to multiple locations."
-    )
-    parser.add_argument(
-        "job_ids",
-        nargs="+",
-        help="The numeric Greenhouse job id (the number in the URL when on the Job Dashboard)",
-    )
-    parser.add_argument(
-        "--region",
-        dest="regions",
-        nargs="+",
-        choices=sorted(REGIONS.keys()),
-        help="The regions in which to create job postings",
-    )
-
-    parser.add_argument(
-        "--browser",
-        dest="browser",
-        choices=["chrome", "firefox"],
-        default="chrome",
-        help="The browser to use (default is chrome)",
-    )
-
-    parser.add_argument(
-        "--reset-all",
-        action="store_true",
-        help="Delete ALL posts under a given job_id (no --limit support)",
-    )
-
-    parser.add_argument(
-        "--headless", action="store_true", help="Run the automation without the GUI"
-    )
-
-    parser.add_argument(
-        "--limit", dest="limit", help="The specific job post to clone inside a REQ"
-    )
-
-    # arg parsing debug
-    # print(vars(parser.parse_args()))
-    return parser.parse_args()
-
-
-###############################################################
-
-
 def remove_tooltips(browser):
     browser.execute_script(
         dedent(
@@ -380,6 +217,7 @@ def remove_tooltips(browser):
     )
 
 
+###############################################################
 def main():
     args = parse_args()
 
@@ -406,10 +244,13 @@ def main():
         options.add_argument("disable-infobars")
         options.add_argument("--disable-extensions")
 
+    # Clean up any stale webdriver() processes from prior unexpected aborts
+    clean_slate()
     if args.browser == "firefox":
         browser = webdriver.Firefox()
     else:
         browser = webdriver.Chrome(options=options)
+
     browser.maximize_window()
 
     sso_authenticate(browser, args)
@@ -430,7 +271,7 @@ def main():
         existing_names = []
         existing_locations = []
 
-        print(f"[Harvesting job details]")
+        print("[Harvesting job details]")
         while True:
             print(f"-> Processing page {page}")
             time.sleep(3.5)
@@ -499,7 +340,7 @@ def main():
                 new_locations = set(region_locations) - set(limited_locations)
 
                 if not new_locations:
-                    print(f"--> All locations already exist.")
+                    print("--> All locations already exist.")
                     continue
 
                 for location_text in sorted(new_locations):
@@ -561,7 +402,7 @@ def main():
                         f'/li[contains(@class, "ui-menu-item")]'
                         f'/div[contains(text(), "{publish_location_text}")]'
                     )
-                    location_choices = wait.until(
+                    wait.until(
                         lambda browser: browser.find_elements(
                             By.XPATH, popup_menu_xpath
                         )
@@ -584,7 +425,7 @@ def main():
                         )
                     )
 
-        print(f"[Marking all job posts live]")
+        print("[Marking all job posts live]")
         browser.get(job_posts_page_url)
         page = 1
 
@@ -623,3 +464,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    browser.quit()

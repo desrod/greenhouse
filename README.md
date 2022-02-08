@@ -11,11 +11,11 @@
 
 ## Installing and configuring the automation
 ---
-```bash
+``` bash
 git clone https://github.com/desrod/greenhouse
 cd greenhouse
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .env
+source .env/bin/activate
 pip3 install -r requirements.txt
 ```
 
@@ -39,7 +39,7 @@ ChromeDriver 95.0.4638.17 (a9d0719444d4b035e284ed1fce73bf6ccd789df2-refs/branch-
 
 You will also need to put this in your default `$PATH`, or export a new `$PATH` environment variable to include this location, eg: 
 
-```bash
+``` bash
 export PATH=$PATH:/opt/bin
 ```
 
@@ -82,66 +82,67 @@ Now run the script and tell it which job id(s) you want to update with new job p
 ./post-job.py 1592880 1726996 --region americas emea
 ```
 
-> Note: If you're cloning to multiple regions, you **must** provide them at the time of cloning. You cannot clone to 'emea' and then in a second pass, clone to 'americas', as this will fail. 
+> Note: If you're cloning to multiple regions, you **must** provide them at the time of cloning. You cannot clone to 'emea' and then in a second pass, clone to 'americas', as this will fail.
 
 The browser will open and things will happen:
 
 - Script will log you in to Ubuntu SSO and then pause for you to 2FA.
 - New posts will be created for each city in the region that doesn't already have an existing post in that location.
 - The new posts (and any others that are currently 'OFF') will be turned ON (made live on the 'Canonical - Jobs' board).
-  
-  > Note: Please make sure you review the posts when complete, so any that you intended to remain off, are disabled after cloning. 
+
+  > Note: Please make sure you review the posts when complete, so any that you intended to remain off, are disabled after cloning.
 
 If the script fails partway through you can safely rerun it, since it won't create a duplicate job post for cities that already have one.
 
-> Note: If the script does fail, it may leave lingering 'chromedriver' processes running. You can kill those off easily with the following: 
+> Note: If the script does fail, it may leave lingering 'chromedriver' processes running. You can kill those off easily with the following:
 
-``` bash 
+``` bash
 kill -9 $(pgrep -f chromedriver)
 ```
 ## Cloning from separate parent posts
 ---
-In some cases, you may have a single job that is posted uniquely to specific regions. For example, a DSE role that gets posted to `nycmetro` and `brasil` (both in AMER region), but each post may have their own unique requirements or job description. 
+In some cases, you may have a single job that is posted uniquely to specific regions. For example, a DSE role that gets posted to `nycmetro` and `brasil` (both in AMER region), but each post may have their own unique requirements or job description.
 
-To facilitate this, the automation has a `--limit` flag, which allows you to restrict which post you're targeting when cloning (a "parent" post, in this vernacular). 
+To facilitate this, the automation has a `--limit` flag, which allows you to restrict which post you're targeting when cloning (a "parent" post, in this vernacular).
 
-To clone a specific post, you'll need to identify two key numeric values: 
-1. The `job_id`, found in the URL field of your browser when editing/viewing the role in GH. The `job_id` in the URL if your browser, will look like: 
+To clone a specific post, you'll need to identify two key numeric values:
+
+1. The `job_id`, found in the URL field of your browser when editing/viewing the role in GH. The `job_id` in the URL if your browser, will look like:
     ```
     /plans/123456/jobapp
     ```
-2. The `app_id`, which you can find by clicking the edit pencil next to the specific parent post you want to clone from. In your browser's URL field, you'll now see a different number that will look like: 
+2. The `app_id`, which you can find by clicking the edit pencil next to the specific parent post you want to clone from. In your browser's URL field, you'll now see a different number that will look like:
 
     ```
     /jobapps/543210/edit
     ```
-   This second number is the `app_id`. 
+   This second number is the `app_id`.
 
-3. Knowing these two values, you can then clone with the `--limit` flag using this syntax: 
+3. Knowing these two values, you can then clone with the `--limit` flag using this syntax:
 
-   ``` 
+   ``` bash
    ./post-job.py 123456 --region emea --limit 543210 --headless
    ```
 
-I have a Tampermonkey browser add-on that exposes this on each job post to make it easier to clone these roles. Please contact me directly if you want the link to that add-on and wish to use it (link intentionally not posted in this README). 
+I have a Tampermonkey browser add-on that exposes this on each job post to make it easier to clone these roles. Please contact me directly if you want the link to that add-on and wish to use it (link intentionally not posted in this README).
 
 ##  Deleting posts before duplicating
 ---
-Before you clone your posts, you may want to make some changes to the job description, application questions, job naming or other job-specific changes. You'll make those changes in the "parent" post (the source of your clones). 
+Before you clone your posts, you may want to make some changes to the job description, application questions, job naming or other job-specific changes. You'll make those changes in the "parent" post (the source of your clones).
 
-But you may already have dozens of posts that you duplicated previously. Those will need to be removed and recreated with your latest changes/updates. We also re-clone the job posts on a regular basis to "top-post" them at the various job boards, so they get more attention after they've aged off and gone "below the margin" on those boards. 
+But you may already have dozens of posts that you duplicated previously. Those will need to be removed and recreated with your latest changes/updates. We also re-clone the job posts on a regular basis to "top-post" them at the various job boards, so they get more attention after they've aged off and gone "below the margin" on those boards.
 
-To delete and reset your job posts, a preparatory step before re-duplicating (cloning) posts, you can use the following syntax, making sure to use the `job_id`, _not_ the `app_id` here. Using the example from the previous section, that would be: 
+To delete and reset your job posts, a preparatory step before re-duplicating (cloning) posts, you can use the following syntax, making sure to use the `job_id`, _not_ the `app_id` here. Using the example from the previous section, that would be:
 
-```
+``` bash
  ./post-job.py --reset-all 123456 --headless
  ```
 
-This will then go through `job_id: 123456`, remove all posts that are _not_ "parent posts", leaving you with post `543210` (in keeping with the previous example, our parent to be cloned _from_). 
+This will then go through `job_id: 123456`, remove all posts that are _not_ "parent posts", leaving you with post `543210` (in keeping with the previous example, our parent to be cloned _from_).
 
-Once your posts have been removed, you can then duplicate them using the steps in the previous secton. 
+Once your posts have been removed, you can then duplicate them using the steps in the previous secton.
 
-At the moment, this is a two-step process, while we work out how to limit (using the `--limit` flag described earlier), to filter those posts. 
+At the moment, this is a two-step process, while we work out how to limit (using the `--limit` flag described earlier), to filter those posts.
 
 1. Remove duplicated posts, leaving only the parent post(s) (using `--reset-all`)
 2. Re-duplicate your job posts based on those parent post(s) (using `--limit` where needed)
@@ -171,7 +172,7 @@ FileNotFoundError: [Errno 2] No such file or directory: 'chromedriver'
 ```
 This means you haven't yet given the path to `chromedriver` on your system. If you put this in a location already in `$PATH`, it should work, but some like to put these in directories not in the path (such as `/opt/bin/`), and that would need to be exported, as follows: 
 
-```
+``` bash
  export PATH=$PATH:/opt/bin
 ```
 Then re-running the same `post-jobs.py` command will work as expected.
