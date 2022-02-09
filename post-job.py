@@ -460,8 +460,7 @@ def main():
                 break
 
     print("All done! Now go bring those candidates through to offers!")
-
+    browser.quit()
 
 if __name__ == "__main__":
     main()
-    browser.quit()
