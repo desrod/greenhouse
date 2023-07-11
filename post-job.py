@@ -307,10 +307,10 @@ def delete_posts(browser, wait, job_id):
 
         if "live" in job_post.get_attribute("class").split():
             job_post_unpublish = job_post.find_element(
-                By.CSS_SELECTOR, ".unpublish-application-button"
+                By.CSS_SELECTOR, "[aria-label='Job post toggle']"
             )
             job_post_unpublish.click()
-            browser.find_element(By.LINK_TEXT, "Unpublish").click()
+            browser.find_element(By.CSS_SELECTOR, "[title='Unpublish']").click()
 
         job_post_name = job_post.find_element(
             By.CSS_SELECTOR, ".job-application__name"
